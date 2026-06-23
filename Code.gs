@@ -39,11 +39,20 @@ var RM_DIRECTORY = {
 };
 
 /* ------------------------------------------------------------------ */
-function doGet() {
-  return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('FundedNext Partners Dashboard')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+function doGet(e) {
+  try {
+    // Run the existing function that packages all stats, partners, and videos perfectly
+    var data = getDashboardData();
+    
+    // Package it as JSON so external sites like Vercel can read it
+    return ContentService.createTextOutput(JSON.stringify(data))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    // If anything goes wrong, return the error message as JSON
+    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 function getBook_() {
